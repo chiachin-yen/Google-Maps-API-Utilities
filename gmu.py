@@ -17,6 +17,7 @@ class geocoding():
                "maps/api/geocode/"
                "json?address={}&key={}")
 
+    @staticmethod
     def to_lat_lng(query, API_key):
         """Convert addresses into geographic coordinates."""
         target_url = geocoding.API_url.format(query, API_key)
@@ -29,6 +30,29 @@ class geocoding():
         else:
             # No result from the API
             return ('', '')
+
+
+class setting():
+    """Set parameters of the utilities."""
+    @staticmethod
+    def set_API(API_key):
+        """Write Google Maps API Key to the local ini file."""
+        config = configparser.ConfigParser()
+        if os.path.isfile('setting.ini'):
+            config.read('setting.ini')
+            config['API']['KEY'] = API_key
+
+            with open('setting.ini', 'w') as configfile:
+                config.write(configfile)
+
+        else:
+            config['API'] = {'KEY': API_key}
+            print("API Key Saved.")
+
+            with open('setting.ini', 'w') as configfile:
+                config.write(configfile)
+
+        return 0
 
 
 def main(mode, target):
@@ -86,5 +110,4 @@ if __name__ == "__main__":
         help="Which file to proceed."
     )
     args = arg_parser.parse_args()
-    print("tada")
     main(args.mode, args.target)
